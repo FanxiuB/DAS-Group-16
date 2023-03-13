@@ -97,7 +97,9 @@ model = glm(time_at_shelter ~ animal_type + month + year + intake_type + chip_st
 model %>%
   summary()
 #Raise the second model by the summary table
-#Drop the year factor since it is only none value
+#Noticed that the coefficient of year factor cannot be defined because of singularities.
+#Checked the dataset we found that for the year 2016 we only have data from 3 months, that implies factor year and year could be with multicollinearity.
+#We determine to drop the factor year.
 model2 = glm(time_at_shelter ~ animal_type + month + intake_type + chip_status, family="poisson", data=df)
 #Summarize the second model
 model2 %>%
