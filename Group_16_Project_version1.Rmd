@@ -90,8 +90,9 @@ ggplot(data = df, aes(x = chip_status, y = time_at_shelter, fill = chip_status))
 ```
 
 ```{r}
-#Modelling
-model = glm(time_at_shelter ~ animal_type + month + year + intake_type + chip_status, family="poisson", data=df)
+#Modelling using poisson glm model with link function log.
+model = glm(time_at_shelter ~ animal_type + month + year + intake_type + chip_status,
+             family="poisson"(link = "log"), data=df)
 #Optimize the model
 #Summarize the first model
 model %>%
@@ -100,8 +101,16 @@ model %>%
 #Noticed that the coefficient of year factor cannot be defined because of singularities.
 #Checked the dataset we found that for the year 2016 we only have data from 3 months, that implies factor year and year could be with multicollinearity.
 #We determine to drop the factor year.
-model2 = glm(time_at_shelter ~ animal_type + month + intake_type + chip_status, family="poisson", data=df)
-#Summarize the second model
+model2 = glm(time_at_shelter ~ animal_type + month + intake_type + chip_status,
+             family="poisson"(link = "log"), data=df)
 model2 %>%
   summary()
+```
+
+```{r}
+#Formal analysis by plotting the ratio of rates
+#Plot ratio of rates and their confidence intervals
+plot_model(model2, show.values = TRUE, transform = "exp",
+           title = "Ratio of rates(time at shelter)", show.p = FALSE)
+#The ratio of rates reflect the ratio of event occurrences between two groups in a unit of time. The greater the ratio, the more likely one group is to experience the event compared to the other group
 ```
