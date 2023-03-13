@@ -1,0 +1,105 @@
+---
+title: "Group_16_Project"
+author: "Group_16"
+output:
+  pdf_document:
+    latex_engine: pdflatex
+    number_sections: no
+    keep_tex: true
+  html_document:
+    df_print: paged
+fig_caption: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, eval = TRUE, warning = FALSE, message = FALSE, comment = NA)
+```
+
+```{r libraries}
+library(tidyverse)
+library(moderndive)
+library(gapminder)
+library(sjPlot)
+library(stats)
+library(jtools)
+library(dplyr)
+library(knitr)
+library(magrittr)
+```
+
+```{r data, echo = FALSE, eval = TRUE, warning = FALSE, message = FALSE}
+# read the dataset and omit the na value
+animal = read.csv("dataset16.csv")%>%na.omit()
+```
+
+# Introduction {#sec:Intro}
+
+
+# Exploratory Data Analysis {#sec:EDA}
+```{r}
+# create a training data set and transfer the character
+# explanatory variable and integer variable into 
+# factor variable
+df = animal%>%
+  mutate_if(is.character, as.factor)
+df$year=as.factor(df$year)
+df$month=as.factor(df$month)
+```
+
+Plot to get an initial impression of the data
+
+```{r}
+#Plot of animal_type against outcome_type
+ggplot(data = df, aes(x = animal_type, y =time_at_shelter , fill = animal_type)) +
+geom_boxplot() +
+labs(x = "animal_type", y = "time_at_shelter") +
+theme(legend.position = "none")
+```
+
+```{r}
+#Plot of year against outcome_type
+ggplot(data = df, aes(x = year, y = time_at_shelter, fill = year)) +
+  geom_boxplot() +
+  labs(x = "year", y = "time_at_shelter") +
+  theme(legend.position = "none")
+```
+
+
+```{r}
+#Plot of month against time_at_shelter
+ggplot(data = df, aes(x = month, y = time_at_shelter, fill = month)) +
+  geom_boxplot() +
+  labs(x = "month", y = "time_at_shelter") +
+  theme(legend.position = "none")
+```
+
+```{r}
+#Plot of intake_type against time_at_shelter
+ggplot(data = df, aes(x = intake_type, y = time_at_shelter, fill = intake_type)) +
+  geom_boxplot() +
+  labs(x = "intake_type", y = "time_at_shelter") +
+  theme(legend.position = "none")
+```
+
+```{r}
+#Plot of chip_status against time_at_shelter
+ggplot(data = df, aes(x = chip_status, y = time_at_shelter, fill = chip_status)) +
+  geom_boxplot() +
+  labs(x = "chip_status", y = "time_at_shelter") +
+  theme(legend.position = "none")
+```
+
+```{r}
+#Modelling
+model = glm(time_at_shelter ~ animal_type + month + year + intake_type + chip_status, family="poisson", data=df)
+#Optimize the model
+#Summarize the first model
+model %>%
+  summary()
+#Raise the second model by the summary table
+#Drop the year factor since it is only none value
+model2 = glm(time_at_shelter ~ animal_type + month + intake_type + chip_status, family="poisson", data=df)
+#Summarize the second model
+model2 %>%
+  summary()
+```
