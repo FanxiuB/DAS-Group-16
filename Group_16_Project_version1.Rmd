@@ -2,12 +2,12 @@
 title: "Group_16_Project"
 author: "Group_16"
 output:
+  html_document:
+    df_print: paged
   pdf_document:
     latex_engine: pdflatex
     number_sections: no
     keep_tex: true
-  html_document:
-    df_print: paged
 fig_caption: yes
 ---
 
@@ -15,7 +15,7 @@ fig_caption: yes
 knitr::opts_chunk$set(echo = TRUE, eval = TRUE, warning = FALSE, message = FALSE, comment = NA)
 ```
 
-```{r libraries}
+```{r libraries,echo = FALSE, eval = TRUE, warning = FALSE, message = FALSE}
 library(tidyverse)
 library(moderndive)
 library(gapminder)
@@ -29,14 +29,16 @@ library(magrittr)
 
 ```{r data, echo = FALSE, eval = TRUE, warning = FALSE, message = FALSE}
 # read the dataset and omit the na value
+setwd("C:/Users/Thinkpad/Desktop/新建文件夹")
 animal = read.csv("dataset16.csv")%>%na.omit()
 ```
 
 # Introduction {#sec:Intro}
-
+Animal protection has now become a growing concern in society and animal being admitted to the shelter is one of the conservation measures.The purpose of this report is to use the Generalised Linear Model to analyse whether the days of animals spent at the shelter between being admitted and the final outcome (Time_at_Shelter) is related to the type of animal (Animal_type),the month the animal was admitted (Month), the year the animal was admitted to (Year), the reason for the animal being admitted (Intake_type), and status of a microchip with owner information (Chip_Status), which will be anlyzed below.
 
 # Exploratory Data Analysis {#sec:EDA}
-```{r}
+In order to carry out an initial analysis of the relationship between the outcome variables and all the explanatory variables, we use five boxplots to provide an overview on a case-by-case basis.
+```{r,echo = FALSE, eval = TRUE, warning = FALSE, message = FALSE}
 # create a training data set and transfer the character
 # explanatory variable and integer variable into 
 # factor variable
@@ -45,51 +47,54 @@ df = animal%>%
 df$year=as.factor(df$year)
 df$month=as.factor(df$month)
 ```
+For Figure 1,it shows that days spent at the shelter between being admitted and the final outcome for birds seem to be longer which means being with wider distribution.And there are more outliers for cats and dogs.
 
-Plot to get an initial impression of the data
-
-```{r}
+```{r,echo = FALSE, eval = TRUE, warning = FALSE, message = FALSE, out.width = '68%', fig.align = "center",fig.cap = "\\label{fig:box} Figure 1:time_at_shelter by animal_type", fig.pos = 'H'}
 #Plot of animal_type against outcome_type
 ggplot(data = df, aes(x = animal_type, y =time_at_shelter , fill = animal_type)) +
 geom_boxplot() +
 labs(x = "animal_type", y = "time_at_shelter") +
 theme(legend.position = "none")
 ```
+Basically there is no difference of the days spent at the shelter between being admitted and the final outcome for different animals in 2016 and 2017 ,which can be showed in  Figure 2.
 
-```{r}
+```{r,echo = FALSE, eval = TRUE, warning = FALSE, message = FALSE, out.width = '68%', fig.align = "center",fig.cap = "\\label{fig:box} Figure 2:time_at_shelter by year", fig.pos = 'H'}
 #Plot of year against outcome_type
 ggplot(data = df, aes(x = year, y = time_at_shelter, fill = year)) +
   geom_boxplot() +
   labs(x = "year", y = "time_at_shelter") +
   theme(legend.position = "none")
 ```
+From Figure 3,we can see that for different months,the days spent at the shelter between being admitted and the final outcome for animals have their own differences,but the median for 12 months all seem to be similar.
 
-
-```{r}
+```{r,echo = FALSE, eval = TRUE, warning = FALSE, message = FALSE, out.width = '68%', fig.align = "center",fig.cap = "\\label{fig:box} Figure 3:time_at_shelter by month", fig.pos = 'H'}
 #Plot of month against time_at_shelter
 ggplot(data = df, aes(x = month, y = time_at_shelter, fill = month)) +
   geom_boxplot() +
   labs(x = "month", y = "time_at_shelter") +
   theme(legend.position = "none")
 ```
+As is showed in Figure 4, the confiscated animals stay longest time in shelter before the outcome,and there are not too much difference for owner surrendered and stray animals.
 
-```{r}
+```{r,echo = FALSE, eval = TRUE, warning = FALSE, message = FALSE, out.width = '68%', fig.align = "center",fig.cap = "\\label{fig:box} Figure 4:time_at_shelter by intake_type", fig.pos = 'H'}
 #Plot of intake_type against time_at_shelter
 ggplot(data = df, aes(x = intake_type, y = time_at_shelter, fill = intake_type)) +
   geom_boxplot() +
   labs(x = "intake_type", y = "time_at_shelter") +
   theme(legend.position = "none")
 ```
+In Figure 5,we can see that for the three types of chip status,the days in shelter for animals with scanned chips have smallest median but distribute more widely.
 
-```{r}
+```{r,echo = FALSE, eval = TRUE, warning = FALSE, message = FALSE, out.width = '68%', fig.align = "center",fig.cap = "\\label{fig:box} Figure 5:time_at_shelter by chip_status", fig.pos = 'H'}
 #Plot of chip_status against time_at_shelter
 ggplot(data = df, aes(x = chip_status, y = time_at_shelter, fill = chip_status)) +
   geom_boxplot() +
   labs(x = "chip_status", y = "time_at_shelter") +
   theme(legend.position = "none")
 ```
-
-```{r}
+# Formal Data Analysis 
+After the initial graphical analysis of the relationship between the variables, we will use the GLM model to further analyse the relationship between the outcome variables (Time_at_Shelter)and the explanatory variables(Animal_type,Month,Year,Intake_type,Chip_Status), and the model will be based on poisson glm model with link function log.The outcome can be showed as follow,and we notice that the coefficient of year factor cannot be defined.There are some reasons for that,firstly the the explanatory variables month and year exist multicollinearity,and there are also some missing month data in 2016,finally we can also include that changes in year does not affect the outcome variable from Figure 2.
+```{r,echo = FALSE, eval = TRUE, warning = FALSE, message = FALSE}
 #Modelling using poisson glm model with link function log.
 model = glm(time_at_shelter ~ animal_type + month + year + intake_type + chip_status,
              family="poisson"(link = "log"), data=df)
@@ -97,8 +102,12 @@ model = glm(time_at_shelter ~ animal_type + month + year + intake_type + chip_st
 #Summarize the first model
 model %>%
   summary()
+```
+So we can consider dropping the variable year and reconstruct the model with the remaining four variables as explanatory variables, resulting in the following final results.The coefficients for each of the explanatory variables were essentially negative, and in terms of p-values, although some variables have p-values greater than 0.05 but given the correlated changes reflected in the box plots from the previous preliminary analysis, all explanatory variables included in the below regression model table are ultimately retained.
+
+```{r,echo = FALSE, eval = TRUE, warning = FALSE, message = FALSE}
 #Raise the second model by the summary table
-#Noticed that the coefficient of year factor cannot be defined because of multicollinearity.
+#Noticed that the coefficient of year factor cannot be defined because of singularities.
 #Checked the dataset we found that for the year 2016 we only have data from 3 months, that implies factor year and year could be with multicollinearity.
 #We determine to drop the factor year.
 model2 = glm(time_at_shelter ~ animal_type + month + intake_type + chip_status,
@@ -106,11 +115,23 @@ model2 = glm(time_at_shelter ~ animal_type + month + intake_type + chip_status,
 model2 %>%
   summary()
 ```
+Finally,we transform the values in the model into exponential form and plot the ratio of rates.In Figure 6, it can be seen that, in terms of animal types,compared to birds, cats spend 0.83 times more days in shelters before the final outcome, dogs and other wildlifes are 0.79 and 0.68 times more days respectively.In terms of the month the animal was admitted,compared to January, admitted animals spend 1.46 times more days in the shelter in December, which is the longest time, followed by February and October, while all other months are shorter than January, the shortest being August, which is 0.6 times longer compared to January.In terms of the reason for the animal being admitted,the confiscated animals stay longest time in shelter,compared to the former, the difference between owner surrendered and stray animals is not too big at 0.46 and 0.55 times respectively.For chip status,compared to the days spent in the shelter by animals with scan chips, animals without scan chips and those unable to be scanned were 0.99 and 0.76 times longer, respectively.
 
-```{r}
+
+```{r,echo = FALSE, eval = TRUE, warning = FALSE, message = FALSE, out.width = '68%', fig.align = "center",fig.cap = "\\label{fig:box} Figure 6:Ratio of rates(time at shelter)", fig.pos = 'H'}
 #Formal analysis by plotting the ratio of rates
 #Plot ratio of rates and their confidence intervals
 plot_model(model2, show.values = TRUE, transform = "exp",
            title = "Ratio of rates(time at shelter)", show.p = FALSE)
 #The ratio of rates reflect the ratio of event occurrences between two groups in a unit of time. The greater the ratio, the more likely one group is to experience the event compared to the other group
 ```
+# Conclusion
+In summary, in order to find What factors influence the days of animals spent at the shelter between being admitted and the final outcome (Time_at_Shelter),we constructed the model based on poisson glm model with link function log to explore the relationship between the former and the explanatory variables(Animal_type,Month,Year,Intake_type,Chip_Status), and ultimately retains all variables except the year.Finally, by plotting the ratio of rates, we also explored the quantitative relationship between the variables within each type.
+
+
+
+
+
+
+
+
