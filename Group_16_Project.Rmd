@@ -29,8 +29,7 @@ library(magrittr)
 
 ```{r data, echo = FALSE, eval = TRUE, warning = FALSE, message = FALSE}
 # read the dataset and omit the na value
-setwd("E:/Program Files/RStudio/DataAnalysisSkill/DAS_Project2")
-animal = read.csv("dataset16.csv")%>%na.omit()
+animal = read.csv("https://raw.githubusercontent.com/FanxiuB/DAS-Group-16/main/dataset16.csv")%>%na.omit()
 ```
 
 # Introduction {#sec:Intro}
