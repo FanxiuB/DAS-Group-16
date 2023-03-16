@@ -102,7 +102,7 @@ ggplot(data = df, aes(x = chip_status, y = time_at_shelter, fill = chip_status))
 
 # Formal Data Analysis
 
-After the initial graphical analysis of the relationship between the variables, we will use the GLM model to further analyse the relationship between the outcome variables (Time_at_Shelter)and the explanatory variables(Animal_type,Month,Year,Intake_type,Chip_Status), and the model will be based on poisson GLM model, since the response variable is the count of the number of days animal spentat the shelter, with link function log.So,the model(1) will be like this: $$
+After the initial graphical analysis of the relationship between the variables, we will use the GLM model to further analyse the relationship between the outcome variables (Time_at_Shelter)and the explanatory variables(Animal_type,Month,Year,Intake_type,Chip_Status), and the model will be based on poisson GLM model, since the response variable is the count of the number of days animal spent at the shelter, with link function log.So,the model(1) will be like this: $$
 \log(\mathrm{E}(y_i)) = \beta_0 + \beta_{1i} \mathrm{animal\_type_i} + \beta_{2j} \mathrm{month_j} + \beta_{3t} \mathrm{year_t} + \beta_{4p} \mathrm{intake\_type_p} + \beta_{5q} \mathrm{chip\_status_q}
 $$ where the value of $\mathrm{animal\_type_i}$ include:BIRD,CAT,DOG,WILDLIFE;the value of $\mathrm{month_j}$ include:1 to 12;the value of $\mathrm{year_t}$ include:2016,2017;the value of $\mathrm{intake\_type_p}$include:CONFISCATED,OWNER SURRENDER,STRAY;the value of $\mathrm{chip\_status_q}$ include:SCAN CHIP,SCAN NO CHIP,UNABLE TO SCAN;and all the variables above are group variables.
 
