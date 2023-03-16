@@ -135,10 +135,28 @@ Finally,we transform the values in the model(2) into exponential form and plot t
 ```{r,echo = FALSE, eval = TRUE, warning = FALSE, message = FALSE, out.width = '68%', fig.align = "center",fig.cap = "\\label{fig:box} Figure 6:Ratio of rates(time at shelter)", fig.pos = 'H'}
 #Formal analysis by plotting the ratio of rates
 #Plot ratio of rates and their confidence intervals
-plot_model(model2, show.values = TRUE, transform = "exp",
-           title = "Ratio of rates(time at shelter)", show.p = FALSE)
+#Since using plot_model directly makes the plot and the values 
+#partially overlapped each other, we firstly set a variable p as the plot.
+p = plot_model(model2, show.values = FALSE, transform = "exp",
+               title = "Ratio of rates(time at shelter)", show.p = FALSE)
+#Secondly, we extract the data from p
+original_data = p$data
+#Thirdly, we create a data set of the labels
+label_data <- data.frame(
+  x = original_data[[1]],
+  y = as.numeric(as.character(original_data[[2]])),
+  label = round(as.numeric(as.character(original_data[[2]])), 2),
+  group = original_data$group
+)
+#Fourthly, we add a new layer to p to adjust the appearance of labels
+p_new = p +
+  geom_text(data = label_data, aes(x = x, y = y, label = label),
+            hjust = 0.5, vjust = -0.5, size = 3)
+#Finally, we print the plot
+print(p_new)
 #The ratio of rates reflect the ratio of event occurrences between two groups in a unit of time. The greater the ratio, the more likely one group is to experience the event compared to the other group
 ```
+
 # Conclusion
 In summary, in order to find What factors influence the days of animals spent at the shelter between being admitted and the final outcome (Time_at_Shelter),we constructed the model based on poisson GLM model with link function log to explore the relationship between the former and the explanatory variables(Animal_type,Month,Year,Intake_type,Chip_Status), and ultimately retains all variables except the year.Finally, by plotting the ratio of rates, we also explored the quantitative relationship between the variables within each type.
 
