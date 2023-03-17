@@ -51,6 +51,7 @@
 \providecommand{\tightlist}{%
   \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
 \setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+\usepackage{float}
 \ifLuaTeX
   \usepackage{selnolig}  % disable illegal ligatures
 \fi
@@ -164,8 +165,9 @@ After the initial graphical analysis of the relationship between the
 variables, we will use the GLM model to further analyse the relationship
 between the outcome variables (Time\_at\_Shelter)and the explanatory
 variables(Animal\_type,Month,Year,Intake\_type,Chip\_Status), and the
-model will be based on poisson GLM model with link function log.So,the
-model(1) will be like this: \[
+model will be based on poisson GLM model, since the response variable is
+the count of the number of days animal spent at the shelter, with link
+function log.So,the model(1) will be like this: \[
 \log(\mathrm{E}(y_i)) = \beta_0 + \beta_{1i} \mathrm{animal\_type_i} + \beta_{2j} \mathrm{month_j} + \beta_{3t} \mathrm{year_t} + \beta_{4p} \mathrm{intake\_type_p} + \beta_{5q} \mathrm{chip\_status_q}
 \] where the value of \(\mathrm{animal\_type_i}\)
 include:BIRD,CAT,DOG,WILDLIFE;the value of \(\mathrm{month_j}\)
@@ -285,22 +287,25 @@ AIC: 14017
 Number of Fisher Scoring iterations: 6
 \end{verbatim}
 
-Finally,we transform the values in the model(2) into exponential form
-and plot the ratio of rates.In Figure 6, it can be seen that, in terms
-of animal types,compared to birds, cats spend 0.83 times more days in
-shelters before the final outcome, dogs and other wildlifes are 0.79 and
-0.68 times more days respectively.In terms of the month the animal was
-admitted,compared to January, admitted animals spend 1.46 times more
-days in the shelter in December, which is the longest time, followed by
-February and October, while all other months are shorter than January,
-the shortest being August, which is 0.6 times longer compared to
-January.In terms of the reason for the animal being admitted,the
-confiscated animals stay longest time in shelter,compared to the former,
-the difference between owner surrendered and stray animals is not too
-big at 0.46 and 0.55 times respectively.For chip status,compared to the
-days spent in the shelter by animals with scan chips, animals without
-scan chips and those unable to be scanned were 0.99 and 0.76 times
-longer, respectively.
+Finally,we transform the values in the model(2) into exponential
+formFinally,we transform the values in the model(2) into exponential
+form and plot the ratio of rates.In Figure 6, it can be seen that, from
+the perspective of animal types, compared to birds, cats spent 0.83
+times the number of days in the shelter, while dogs and other wild
+animals spent 0.79 and 0.68 times the number of days, respectively. In
+terms of the month the animal was admitted,compared to January, animals
+admitted in December spend 1.46 times the number of days in the shelter,
+which is the longest time, followed by animals admitted in February and
+October, while animals admitted in all other months spend less number of
+days in shelter than January, the smallest being animal admitted in
+August, which is 0.6 times compared to animal admitted in January.In
+terms of the reason for the animal being admitted,the confiscated
+animals stay longest time in shelter,compared to them, the number of
+days spend on shelter of animals with intake types of owner surrendered
+and stray are of 0.46 and 0.55 times respectively.For chip
+status,compared to the days spent in the shelter by animals with scan
+chips, animals without scan chips and those unable to be scanned were
+0.99 and 0.76 times, respectively.
 
 \begin{figure}[H]
 

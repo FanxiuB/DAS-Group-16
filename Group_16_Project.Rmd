@@ -9,6 +9,8 @@ output:
   html_document:
     df_print: paged
 fig_caption: yes
+header-includes:
+  - \usepackage{float}
 ---
 
 ```{r setup, include=FALSE}
